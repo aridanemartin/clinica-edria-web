@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import styles from '@/styles/error.module.css';
 
 export default function PacienteError() {
   const router = useRouter();
@@ -16,9 +17,9 @@ export default function PacienteError() {
   }, [router]);
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center p-4">
-      <h1 className="text-2xl font-bold mb-4">Ruta no válida</h1>
-      <p className="text-gray-600 mb-6">
+    <main className={styles.errorContainer}>
+      <h1 className={styles.errorTitle}>Ruta no válida</h1>
+      <p className={styles.errorMessage}>
         La ruta /paciente no es accesible directamente. Serás redirigido a la página de inicio.
       </p>
     </main>
