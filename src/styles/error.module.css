@@ -1,0 +1,49 @@
+.errorContainer {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.errorTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.errorMessage {
+  color: #4B5563;
+  margin-bottom: 1.5rem;
+}
+
+.errorActions {
+  display: flex;
+  gap: 1rem;
+}
+
+.errorButton {
+  padding: 0.5rem 1rem;
+  color: white;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s;
+}
+
+.errorButtonPrimary {
+  composes: errorButton;
+  background-color: #3B82F6;
+}
+
+.errorButtonPrimary:hover {
+  background-color: #2563EB;
+}
+
+.errorButtonSecondary {
+  composes: errorButton;
+  background-color: #6B7280;
+}
+
+.errorButtonSecondary:hover {
+  background-color: #4B5563;
+} 
