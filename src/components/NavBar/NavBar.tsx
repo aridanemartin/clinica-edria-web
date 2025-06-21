@@ -19,6 +19,9 @@ export default function NavBar() {
     { path: '/inicio', label: 'Inicio' },
     { path: '/sobre-nosotros', label: 'Sobre Nosotros' },
     { path: '/especialidades', label: 'Especialidades' },
+    { path: '/pacientes', label: 'Pacientes' },
+    { path: '/auth/login', label: 'Login' },
+    { path: '/auth/register', label: 'Register' },
     { path: '/equipo', label: 'Equipo' },
     { path: '/contacto', label: 'Contacto' },
   ];
