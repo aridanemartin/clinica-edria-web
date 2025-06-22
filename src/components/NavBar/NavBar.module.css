@@ -1,8 +1,4 @@
 .navContainer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
   background-color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   z-index: 1000;
@@ -46,10 +42,28 @@
   color: #0070f3;
 }
 
+.logoutButton {
+  background: none;
+  border: none;
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: inherit;
+  font-family: inherit;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  padding: 0;
+}
+
+.logoutButton:hover {
+  color: #0070f3;
+}
+
 .hamburger {
   display: block;
   cursor: pointer;
   padding: 0.5rem;
+  z-index: 1001;
 }
 
 .hamburgerLine {
@@ -109,6 +123,7 @@
   color: black;
 }
 
+/* Desktop styles */
 @media (min-width: 1000px) {
   .navLinks {
     display: flex;
@@ -120,5 +135,47 @@
 
   .mobileMenu {
     display: none;
+  }
+}
+
+/* Mobile responsive improvements */
+@media (max-width: 768px) {
+  .navContent {
+    padding: 0.8rem 1rem;
+  }
+  
+  .logo {
+    font-size: 1.3rem;
+  }
+  
+  .hamburger {
+    padding: 0.3rem;
+  }
+  
+  .hamburgerLine {
+    width: 22px;
+    height: 2px;
+    margin: 4px 0;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .navContent {
+    padding: 0.6rem 0.8rem;
+  }
+  
+  .logo {
+    font-size: 1.2rem;
+  }
+  
+  .hamburgerLine {
+    width: 20px;
+    height: 2px;
+    margin: 3px 0;
+  }
+  
+  .mobileNavLink a {
+    font-size: 1.1rem;
   }
 } 

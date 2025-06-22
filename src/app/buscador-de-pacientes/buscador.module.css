@@ -1,0 +1,113 @@
+.container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.searchContainer {
+  margin-bottom: 30px;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.resultsCount {
+  margin-bottom: 20px;
+  color: #666;
+}
+
+.tableContainer {
+  overflow-x: auto;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+.tableHeader {
+  background-color: #f8f9fa;
+}
+
+.tableHeader th {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 2px solid #ddd;
+  font-weight: bold;
+}
+
+.tableRow {
+  border-bottom: 1px solid #eee;
+}
+
+.tableRow:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.tableCell {
+  padding: 12px;
+}
+
+.patientCode {
+  padding: 12px;
+  font-weight: bold;
+  color: #007bff;
+}
+
+.patientName {
+  padding: 12px;
+  font-weight: 500;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+}
+
+.errorContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.errorMessage {
+  color: red;
+}
+
+.retryButton {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.retryButton:hover {
+  background-color: #0056b3;
+} 
