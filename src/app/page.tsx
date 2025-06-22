@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import styles from "./page.module.css";
 
 export default function Home() {
 	const router = useRouter();
@@ -11,14 +12,7 @@ export default function Home() {
 	}, [router]);
 
 	return (
-		<div
-			style={{
-				display: "flex",
-				justifyContent: "center",
-				alignItems: "center",
-				height: "100vh",
-			}}
-		>
+		<div className={styles.redirectContainer}>
 			<p>Redirigiendo...</p>
 		</div>
 	);

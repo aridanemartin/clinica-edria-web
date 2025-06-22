@@ -2,6 +2,7 @@
 
 import { AuthProvider } from '@/contexts/AuthContext';
 import NavBar from '@/components/NavBar/NavBar';
+import styles from './layout.module.css';
 
 export default function PacienteLayout({
   children,
@@ -10,8 +11,7 @@ export default function PacienteLayout({
 }) {
   return (
     <AuthProvider>
-      <NavBar />
-      <div style={{ marginTop: '80px' }}>{children}</div>
+      <div className={styles.patientContent}>{children}</div>
     </AuthProvider>
   );
 } 

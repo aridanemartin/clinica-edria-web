@@ -2,10 +2,19 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { auth } from '@/firebase/client';
+import { useAuth } from '@/contexts/AuthContext';
 import styles from './NavBar.module.css';
+
+type NavItem = 
+  | { path: string; label: string; type?: 'link' }
+  | { type: 'button'; label: string; onClick: () => Promise<void> };
 
 export default function NavBar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { user } = useAuth();
+  const router = useRouter();
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -15,16 +24,32 @@ export default function NavBar() {
     setIsMobileMenuOpen(false);
   };
 
-  const navItems = [
+  const handleLogout = async () => {
+    try {
+      await auth.signOut();
+      router.push('/inicio');
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
+  const baseNavItems: NavItem[] = [
     { path: '/inicio', label: 'Inicio' },
     { path: '/sobre-nosotros', label: 'Sobre Nosotros' },
     { path: '/especialidades', label: 'Especialidades' },
     { path: '/pacientes', label: 'Pacientes' },
-    { path: '/auth/login', label: 'Login' },
-    { path: '/auth/register', label: 'Register' },
     { path: '/equipo', label: 'Equipo' },
     { path: '/contacto', label: 'Contacto' },
   ];
+
+  const authItems: NavItem[] = user ? [
+    { type: 'button', label: 'Cerrar Sesión', onClick: handleLogout }
+  ] : [
+    { path: '/auth/login', label: 'Login' },
+    { path: '/auth/register', label: 'Register' }
+  ];
+
+  const navItems = [...baseNavItems, ...authItems];
 
   return (
     <nav className={styles.navContainer}>
@@ -35,9 +60,18 @@ export default function NavBar() {
 
         {/* Desktop Navigation */}
         <ul className={styles.navLinks}>
-          {navItems.map((item) => (
-            <li key={item.path} className={styles.navLink}>
-              <Link href={item.path}>{item.label}</Link>
+          {navItems.map((item, index) => (
+            <li key={index} className={styles.navLink}>
+              {item.type === 'button' ? (
+                <button 
+                  onClick={item.onClick} 
+                  className={styles.logoutButton}
+                >
+                  {item.label}
+                </button>
+              ) : (
+                <Link href={item.path}>{item.label}</Link>
+              )}
             </li>
           ))}
         </ul>
@@ -56,11 +90,23 @@ export default function NavBar() {
           ×
         </button>
         <ul className={styles.mobileNavLinks}>
-          {navItems.map((item) => (
-            <li key={item.path} className={styles.mobileNavLink}>
-              <Link href={item.path} onClick={closeMobileMenu}>
-                {item.label}
-              </Link>
+          {navItems.map((item, index) => (
+            <li key={index} className={styles.mobileNavLink}>
+              {item.type === 'button' ? (
+                <button 
+                  onClick={() => {
+                    item.onClick();
+                    closeMobileMenu();
+                  }} 
+                  className={styles.logoutButton}
+                >
+                  {item.label}
+                </button>
+              ) : (
+                <Link href={item.path} onClick={closeMobileMenu}>
+                  {item.label}
+                </Link>
+              )}
             </li>
           ))}
         </ul>

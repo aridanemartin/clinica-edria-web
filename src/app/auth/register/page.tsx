@@ -4,9 +4,10 @@ import { useState } from "react";
 import { auth } from "@/firebase/client";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/navigation";
-import { SupabaseService } from "@/services/supabase";
+import { PatientService } from "@/services/patient-service";
 import { createPatientId } from "@/app/_helpers/createPatientId";
 import Link from "next/link";
+import styles from "./register.module.css";
 
 export default function RegisterPage() {
 	const [email, setEmail] = useState("");
@@ -26,21 +27,22 @@ export default function RegisterPage() {
 
 			if (userCredential.user) {
 				try {
-					const supabaseService = SupabaseService.getInstance();
+					const patientService = PatientService.getInstance();
+					
 					const patientId = createPatientId(name, surname);
 
-					await supabaseService.createPatient({
+					await patientService.createPatient({
 						patient_id: patientId,	
 						name,
 						surname,
 						email,
-						user_id: userCredential.user.uid,
+						firebase_id: userCredential.user.uid,
 						registration_date: new Date().toISOString()
 					});
 
 				} catch (error) {
-					console.error("Error creating patient record:", error);
-					alert("Error creating patient record. Please try again or contact support.");
+					console.error("Error creating user record:", error);
+					alert("Error creating user record. Please try again or contact support.");
 					return;
 				}
 			}
@@ -60,27 +62,16 @@ export default function RegisterPage() {
 	};
 
 	return (
-		<div
-			style={{
-				display: "flex",
-				flexDirection: "column",
-				gap: "20px",
-				maxWidth: "300px",
-				margin: "0 auto",
-				padding: "20px",
-			}}
-		>
-			<h1>Registrarse</h1>
-			<form
-				onSubmit={handleSubmit}
-				style={{ display: "flex", flexDirection: "column", gap: "10px" }}
-			>
+		<div className={styles.container}>
+			<h1>Registrarse como Paciente</h1>
+			<form onSubmit={handleSubmit} className={styles.form}>
 				<input
 					type="text"
 					value={name}
 					onChange={(e) => setName(e.target.value)}
 					placeholder="Nombre"
 					required
+					className={styles.input}
 				/>
 				<input
 					type="text"
@@ -88,6 +79,7 @@ export default function RegisterPage() {
 					onChange={(e) => setSurname(e.target.value)}
 					placeholder="Apellidos"
 					required
+					className={styles.input}
 				/>
 				<input
 					type="email"
@@ -95,6 +87,7 @@ export default function RegisterPage() {
 					onChange={(e) => setEmail(e.target.value)}
 					placeholder="Email"
 					required
+					className={styles.input}
 				/>
 				<input
 					type="password"
@@ -102,14 +95,16 @@ export default function RegisterPage() {
 					onChange={(e) => setPassword(e.target.value)}
 					placeholder="Contraseña"
 					required
+					className={styles.input}
 				/>
-				<button type="submit">
-					Registrarse
+
+				<button type="submit" className={styles.button}>
+					Registrarse como Paciente
 				</button>
 			</form>
-			<div style={{ textAlign: "center" }}>
+			<div className={styles.linkContainer}>
 				<p>¿Ya tienes una cuenta?</p>
-				<Link href="/auth/login" style={{ color: "blue", textDecoration: "underline" }}>
+				<Link href="/auth/login" className={styles.link}>
 					Inicia sesión aquí
 				</Link>
 			</div>

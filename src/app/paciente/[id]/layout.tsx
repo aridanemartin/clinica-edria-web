@@ -1,7 +1,6 @@
 'use client'
 
-import { AuthProvider } from '@/contexts/AuthContext';
-import NavBar from '@/components/NavBar/NavBar';
+import styles from './layout.module.css';
 
 export default function PacienteLayout({
   children,
@@ -9,9 +8,6 @@ export default function PacienteLayout({
   children: React.ReactNode;
 }) {
   return (
-    <AuthProvider>
-      <NavBar />
-      <div style={{ marginTop: '80px' }}>{children}</div>
-    </AuthProvider>
+    <div className={styles.patientIdContent}>{children}</div>
   );
 } 

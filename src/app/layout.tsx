@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import NavBar from "../components/NavBar/NavBar";
+import { AuthProvider } from "@/contexts/AuthContext";
+import ConditionalAdminNavBar from "@/components/ConditionalAdminNavBar";
+import styles from "./layout.module.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,8 +28,11 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <NavBar />
-        <div style={{ marginTop: '80px' }}>{children}</div>
+        <AuthProvider>
+          <NavBar />
+          <ConditionalAdminNavBar />
+          <div className={styles.mainContent}>{children}</div>
+        </AuthProvider>
       </body>
     </html>
   );
