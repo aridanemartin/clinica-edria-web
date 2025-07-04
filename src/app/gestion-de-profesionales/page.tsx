@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { AdminOnly } from "@/components/RoleBasedRoute";
 import { auth } from "@/firebase/client";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { ClinicProfessionalService } from "@/services/clinic-professional-service";
 import { userRole, UserRoleType } from "@/types";
+import { useAuth } from "@/contexts/AuthContext";
 import styles from "./gestion.module.css";
 
 interface ProfessionalDisplay {
@@ -26,13 +27,16 @@ function GestionProfesionalesContent() {
   const [formData, setFormData] = useState({
     name: "",
     surname: "",
-    email: "",
-    password: "",
     specialty: "",
     phone: "",
     role: userRole.CLINIC_PROFESSIONAL as UserRoleType
   });
   const [submitting, setSubmitting] = useState(false);
+  const { refreshUserRole } = useAuth();
+  
+  // Refs for email and password to avoid re-renders
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     loadProfessionals();
@@ -55,11 +59,14 @@ function GestionProfesionalesContent() {
     e.preventDefault();
     setSubmitting(true);
 
+    const email = emailRef.current?.value || "";
+    const password = passwordRef.current?.value || "";
+
     try {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
-        formData.email,
-        formData.password
+        email,
+        password
       );
 
       if (userCredential.user) {
@@ -69,25 +76,31 @@ function GestionProfesionalesContent() {
           name: formData.name,
           surname: formData.surname,
           specialty: formData.specialty,
-          email: formData.email,
+          email: email,
           firebase_id: userCredential.user.uid,
           phone: formData.phone || undefined,
-          active: true,
+          is_active: true,
           role: formData.role
         });
 
         setFormData({
           name: "",
           surname: "",
-          email: "",
-          password: "",
           specialty: "",
           phone: "",
           role: userRole.CLINIC_PROFESSIONAL as UserRoleType
         });
+        
+        // Clear refs
+        if (emailRef.current) emailRef.current.value = "";
+        if (passwordRef.current) passwordRef.current.value = "";
+        
         setShowModal(false);
         
         await loadProfessionals();
+        
+        // Refresh the current user's role to ensure permissions are maintained
+        await refreshUserRole();
         
         alert("Profesional creado exitosamente");
       }
@@ -110,6 +123,34 @@ function GestionProfesionalesContent() {
       ...prev,
       [name]: value
     }));
+  };
+
+  const handleDeleteProfessional = async (professionalId: string, professionalName: string) => {
+    const confirmed = window.confirm(
+      `¿Estás seguro de que quieres eliminar al profesional "${professionalName}"? Esta acción no se puede deshacer.`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      const clinicProfessionalService = ClinicProfessionalService.getInstance();
+      await clinicProfessionalService.deleteClinicProfessional(professionalId);
+      
+      // Reload the professionals list
+      await loadProfessionals();
+      
+      alert("Profesional eliminado exitosamente");
+    } catch (error) {
+      let message = "Ha ocurrido un error al eliminar el profesional.";
+      if (error instanceof Error) {
+        message = error.message;
+      } else if (typeof error === "string") {
+        message = error;
+      }
+      alert(message);
+    }
   };
 
   if (loading) {
@@ -194,7 +235,7 @@ function GestionProfesionalesContent() {
                   <button className={`${styles.actionButton} ${styles.editButton}`}>
                     Editar
                   </button>
-                  <button className={`${styles.actionButton} ${styles.deleteButton}`}>
+                  <button className={`${styles.actionButton} ${styles.deleteButton}`} onClick={() => handleDeleteProfessional(professional.id, `${professional.name} ${professional.surname}`)}>
                     Eliminar
                   </button>
                 </td>
@@ -233,19 +274,15 @@ function GestionProfesionalesContent() {
                 className={styles.modalInput}
               />
               <input
+                ref={emailRef}
                 type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
                 placeholder="Email"
                 required
                 className={styles.modalInput}
               />
               <input
+                ref={passwordRef}
                 type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleInputChange}
                 placeholder="Contraseña"
                 required
                 className={styles.modalInput}

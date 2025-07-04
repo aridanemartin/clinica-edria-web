@@ -1,4 +1,4 @@
-import { supabase, Professional } from './supabase-client';
+import { supabase } from './supabase-client';
 import { BaseService } from './base-service';
 import { UserRoleType } from '@/types';
 
@@ -10,7 +10,7 @@ export interface ClinicProfessional {
   email: string;
   firebase_id: string;
   phone?: string;
-  active: boolean;
+  is_active: boolean;
   role: UserRoleType;
   created_at: string;
 }
@@ -52,8 +52,7 @@ export class ClinicProfessionalService extends BaseService {
       
       const { data, error } = await supabase
         .from('clinic_professionals')
-        .select('*')
-        .order('name', { ascending: true });
+        .select('*');
 
       if (error) throw error;
       return data;
@@ -62,7 +61,7 @@ export class ClinicProfessionalService extends BaseService {
     }
   }
 
-  async getClinicProfessionalByUserId(firebaseId: string): Promise<ClinicProfessional | null> {
+  async getClinicProfessionalByFirebaseId(firebaseId: string): Promise<ClinicProfessional | null> {
     try {
       this.logOperation('Getting clinic professional by user ID', { firebaseId });
 
@@ -103,14 +102,14 @@ export class ClinicProfessionalService extends BaseService {
     }
   }
 
-  async deleteClinicProfessional(firebaseId: string) {
+  async deleteClinicProfessional(professionalId: string) {
     try {
-      this.logOperation('Deleting clinic professional', { firebaseId });
+      this.logOperation('Deleting clinic professional', { professionalId });
       
       const { error } = await supabase
         .from('clinic_professionals')
         .delete()
-        .eq('firebase_id', firebaseId);
+        .eq('id', professionalId);
 
       if (error) throw error;
       return { success: true };

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { PatientService } from "@/services/patient-service";
-import { AdminOnly } from "@/components/RoleBasedRoute";
+import { AdminOnly, ClinicProfessionalOnly } from "@/components/RoleBasedRoute";
 import styles from "./buscador.module.css";
 
 interface PatientSummary {
@@ -152,8 +152,8 @@ function BuscadorPacientesContent() {
 
 export default function BuscadorPacientes() {
   return (
-    <AdminOnly>
+    <ClinicProfessionalOnly>
       <BuscadorPacientesContent />
-    </AdminOnly>
+    </ClinicProfessionalOnly>
   );
 } 

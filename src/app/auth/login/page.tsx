@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { auth } from "@/firebase/client";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/navigation";
@@ -18,8 +18,8 @@ const userType = {
 type UserType = typeof userType[keyof typeof userType];
 
 export default function LoginPage() {
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
+	const emailRef = useRef<HTMLInputElement>(null);
+	const passwordRef = useRef<HTMLInputElement>(null);
 	const [selectedUserType, setSelectedUserType] = useState<UserType>(userType.PATIENT);
 	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
@@ -27,6 +27,9 @@ export default function LoginPage() {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setIsLoading(true);
+
+		const email = emailRef.current?.value || "";
+		const password = passwordRef.current?.value || "";
 
 		try {
 			if (selectedUserType === userType.CLINIC_PROFESSIONAL) {
@@ -62,7 +65,7 @@ export default function LoginPage() {
 				if (selectedUserType === userType.CLINIC_PROFESSIONAL) {
 					// Double-check that the authenticated user matches the professional
 					const professionalService = ClinicProfessionalService.getInstance();
-					const professional = await professionalService.getClinicProfessionalByUserId(userId);
+					const professional = await professionalService.getClinicProfessionalByFirebaseId(userId);
 					
 					if (professional) {
 						// Redirect to professional dashboard
@@ -125,17 +128,15 @@ export default function LoginPage() {
 
 			<form onSubmit={handleSubmit} className={styles.form}>
 				<input
+					ref={emailRef}
 					type="email"
-					value={email}
-					onChange={(e) => setEmail(e.target.value)}
 					placeholder="Email"
 					required
 					className={styles.input}
 				/>
 				<input
+					ref={passwordRef}
 					type="password"
-					value={password}
-					onChange={(e) => setPassword(e.target.value)}
 					placeholder="Contraseña"
 					required
 					className={styles.input}

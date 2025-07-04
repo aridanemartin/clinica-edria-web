@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const patientService = PatientService.getInstance();
       
       // First check if user is a clinic professional (admin or professional)
-      const professional = await clinicProfessionalService.getClinicProfessionalByUserId(userId);
+      const professional = await clinicProfessionalService.getClinicProfessionalByFirebaseId(userId);
       
       if (professional) {
         setUserRole(professional.role);
